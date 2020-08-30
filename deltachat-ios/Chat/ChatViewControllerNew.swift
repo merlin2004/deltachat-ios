@@ -142,12 +142,7 @@ class ChatViewControllerNew: UITableViewController {
                                        name: UIApplication.willResignActiveNotification,
                                        object: nil)
 
-        UIMenuController.shared.menuItems = [
-            UIMenuItem(title: String.localized("info"), action: #selector(BaseMessageCell.messageInfo)),
-            UIMenuItem(title: String.localized("delete"), action: #selector(BaseMessageCell.messageDelete)),
-            UIMenuItem(title: String.localized("forward"), action: #selector(BaseMessageCell.messageForward))
-        ]
-        UIMenuController.shared.update()
+        prepareContextMenu()
     }
 
     private func startTimer() {
@@ -918,8 +913,22 @@ class ChatViewControllerNew: UITableViewController {
     }
 
     // MARK: - Context menu
+    private func prepareContextMenu() {
+        UIMenuController.shared.menuItems = [
+            UIMenuItem(title: String.localized("info"), action: #selector(BaseMessageCell.messageInfo)),
+            UIMenuItem(title: String.localized("delete"), action: #selector(BaseMessageCell.messageDelete)),
+            UIMenuItem(title: String.localized("forward"), action: #selector(BaseMessageCell.messageForward))
+        ]
+        UIMenuController.shared.update()
+        NotificationCenter.default.addObserver(self, selector: #selector(ChatViewControllerNew.menuWillShow),
+                                               name: UIMenuController.willShowMenuNotification, object: nil)
+    }
+
     override func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+
+    @objc func menuWillShow(notification: NSNotification) {
     }
 
     override func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
